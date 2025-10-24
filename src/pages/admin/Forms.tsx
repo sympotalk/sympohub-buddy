@@ -53,9 +53,9 @@ export default function Forms() {
             </p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" size="lg" className="gap-2">
+            <Button variant="outline" size="lg" className="gap-2" disabled>
               <Sparkles className="h-5 w-5" />
-              AI 폼 생성
+              AI 폼 생성 (준비중)
             </Button>
             <Button size="lg" className="gap-2">
               <Plus className="h-5 w-5" />

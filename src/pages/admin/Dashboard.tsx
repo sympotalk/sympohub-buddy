@@ -86,42 +86,44 @@ export default function Dashboard() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="shadow-card">
+        <Card className="transition-shadow hover:shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 최근 행사
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>행사명</TableHead>
-                    <TableHead>일자</TableHead>
-                    <TableHead>참가자</TableHead>
-                    <TableHead>상태</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentEvents.map((event) => (
-                    <TableRow key={event.id}>
-                      <TableCell className="font-medium">{event.name}</TableCell>
-                      <TableCell>{event.date}</TableCell>
-                      <TableCell>{event.participants}명</TableCell>
-                      <TableCell>
-                        <StatusBadge status={event.status} />
-                      </TableCell>
+            <CardContent className="p-6 pt-0">
+              <div className="overflow-hidden rounded-lg border border-border">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted hover:bg-muted">
+                      <TableHead className="font-semibold">행사명</TableHead>
+                      <TableHead className="font-semibold">일자</TableHead>
+                      <TableHead className="font-semibold">참가자</TableHead>
+                      <TableHead className="font-semibold">상태</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {recentEvents.map((event) => (
+                      <TableRow key={event.id} className="hover:bg-muted/50">
+                        <TableCell className="font-medium">{event.name}</TableCell>
+                        <TableCell>{event.date}</TableCell>
+                        <TableCell>{event.participants}명</TableCell>
+                        <TableCell>
+                          <StatusBadge status={event.status} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="transition-shadow hover:shadow-lg">
             <CardHeader>
-              <CardTitle>빠른 작업</CardTitle>
+              <CardTitle className="text-lg">빠른 작업</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button variant="outline" className="w-full justify-start gap-3" size="lg">

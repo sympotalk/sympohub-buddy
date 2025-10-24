@@ -39,7 +39,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
   return (
     <Badge
       variant="secondary"
-      className={cn(config.className, "rounded-[var(--radius-badge)]", className)}
+      className={cn(config.className, "rounded-xl border-0", className)}
     >
       {config.label}
     </Badge>

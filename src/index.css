@@ -46,7 +46,7 @@ All colors MUST be HSL.
     --input: 220 13% 91%;
     --ring: 227 100% 58%;
 
-    --radius: 1rem;
+    --radius: 0.75rem;
     --radius-card: 1rem;
     --radius-badge: 0.75rem;
 

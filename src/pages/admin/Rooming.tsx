@@ -95,31 +95,31 @@ export default function Rooming() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {hotels.map((hotel) => (
-            <Card key={hotel.id} className="shadow-card shadow-hover transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card key={hotel.id} className="transition-shadow hover:shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Building2 className="h-5 w-5 text-primary" />
                   {hotel.name}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">전체 객실</span>
-                    <span className="font-semibold">{hotel.rooms}실</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[15px] text-muted-foreground">전체 객실</span>
+                    <span className="text-base font-semibold">{hotel.rooms}실</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">배정 완료</span>
-                    <span className="font-semibold text-primary">{hotel.assigned}실</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[15px] text-muted-foreground">배정 완료</span>
+                    <span className="text-base font-semibold text-primary">{hotel.assigned}실</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">잔여 객실</span>
-                    <span className="font-semibold text-success">{hotel.available}실</span>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[15px] text-muted-foreground">잔여 객실</span>
+                    <span className="text-base font-semibold text-success">{hotel.available}실</span>
                   </div>
-                  <div className="pt-2">
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="pt-3">
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
                       <div
-                        className="h-full bg-primary transition-all"
+                        className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${(hotel.assigned / hotel.rooms) * 100}%` }}
                       />
                     </div>
@@ -130,60 +130,62 @@ export default function Rooming() {
           ))}
         </div>
 
-        <Card className="shadow-card">
+        <Card className="transition-shadow hover:shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               <Bed className="h-5 w-5 text-primary" />
               객실 배정표
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-4">
+            <div className="mb-6">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="참가자 또는 호텔명으로 검색..." className="pl-10" />
+                <Input placeholder="참가자 또는 호텔명으로 검색..." className="pl-10 h-10" />
               </div>
             </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>No</TableHead>
-                  <TableHead>참가자</TableHead>
-                  <TableHead>호텔명</TableHead>
-                  <TableHead>객실번호</TableHead>
-                  <TableHead>객실타입</TableHead>
-                  <TableHead>체크인</TableHead>
-                  <TableHead>체크아웃</TableHead>
-                  <TableHead>상태</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {roomAssignments.map((assignment) => (
-                  <TableRow key={assignment.id}>
-                    <TableCell className="font-medium">{assignment.id}</TableCell>
-                    <TableCell className="font-semibold">{assignment.participant}</TableCell>
-                    <TableCell>{assignment.hotel}</TableCell>
-                    <TableCell>{assignment.roomNumber}</TableCell>
-                    <TableCell>{assignment.roomType}</TableCell>
-                    <TableCell>{assignment.checkIn}</TableCell>
-                    <TableCell>{assignment.checkOut}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={assignment.status === "확정" ? "default" : "secondary"}
-                        className={
-                          assignment.status === "확정"
-                            ? "bg-success/10 text-success"
-                            : "bg-muted text-muted-foreground"
-                        }
-                      >
-                        {assignment.status}
-                      </Badge>
-                    </TableCell>
+            <div className="overflow-hidden rounded-lg border border-border">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted hover:bg-muted">
+                    <TableHead className="font-semibold">No</TableHead>
+                    <TableHead className="font-semibold">참가자</TableHead>
+                    <TableHead className="font-semibold">호텔명</TableHead>
+                    <TableHead className="font-semibold">객실번호</TableHead>
+                    <TableHead className="font-semibold">객실타입</TableHead>
+                    <TableHead className="font-semibold">체크인</TableHead>
+                    <TableHead className="font-semibold">체크아웃</TableHead>
+                    <TableHead className="font-semibold">상태</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {roomAssignments.map((assignment) => (
+                    <TableRow key={assignment.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{assignment.id}</TableCell>
+                      <TableCell className="font-semibold">{assignment.participant}</TableCell>
+                      <TableCell>{assignment.hotel}</TableCell>
+                      <TableCell>{assignment.roomNumber}</TableCell>
+                      <TableCell>{assignment.roomType}</TableCell>
+                      <TableCell>{assignment.checkIn}</TableCell>
+                      <TableCell>{assignment.checkOut}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={assignment.status === "확정" ? "default" : "secondary"}
+                          className={
+                            assignment.status === "확정"
+                              ? "rounded-xl bg-success/10 text-success border-0"
+                              : "rounded-xl bg-muted text-muted-foreground border-0"
+                          }
+                        >
+                          {assignment.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

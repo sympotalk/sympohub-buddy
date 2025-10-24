@@ -23,12 +23,12 @@ export function StatCard({
   className,
 }: StatCardProps) {
   return (
-    <Card className={cn("shadow-card shadow-hover transition-shadow", className)}>
+    <Card className={cn("transition-shadow hover:shadow-lg", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <h3 className="mt-2 text-3xl font-bold">{value}</h3>
+            <p className="text-[15px] font-medium text-muted-foreground">{title}</p>
+            <h3 className="mt-2 text-[28px] font-bold text-primary">{value}</h3>
             {description && (
               <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             )}

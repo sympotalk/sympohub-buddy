@@ -44,23 +44,30 @@ const menuItems = [
 
 export function Sidebar() {
   return (
-    <aside className="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-64 border-r bg-card">
-      <nav className="flex flex-col gap-1 p-4">
+    <aside className="fixed left-0 top-16 z-40 h-[calc(100vh-4rem)] w-60 border-r border-border bg-sidebar-background">
+      <nav className="flex flex-col gap-1 p-3">
         {menuItems.map((item) => (
           <NavLink
             key={item.url}
             to={item.url}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                "relative flex items-center gap-3 rounded-lg px-4 py-3 text-[15px] font-medium transition-all",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-accent text-primary"
+                  : "text-sidebar-foreground hover:bg-muted"
               )
             }
           >
-            <item.icon className="h-5 w-5" />
-            <span>{item.title}</span>
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                )}
+                <item.icon className="h-5 w-5" />
+                <span>{item.title}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

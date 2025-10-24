@@ -71,14 +71,14 @@ export default function Events() {
           </Button>
         </div>
 
-        <Card className="shadow-card">
+        <Card className="transition-shadow hover:shadow-lg">
           <CardContent className="p-6">
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-6 flex items-center gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="행사명으로 검색..."
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
               <Button variant="outline" className="gap-2">
@@ -87,49 +87,51 @@ export default function Events() {
               </Button>
             </div>
 
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>No</TableHead>
-                  <TableHead>행사명</TableHead>
-                  <TableHead>일자</TableHead>
-                  <TableHead>장소</TableHead>
-                  <TableHead>참가자</TableHead>
-                  <TableHead>상태</TableHead>
-                  <TableHead className="w-[50px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {events.map((event) => (
-                  <TableRow key={event.id}>
-                    <TableCell className="font-medium">{event.id}</TableCell>
-                    <TableCell className="font-semibold">{event.name}</TableCell>
-                    <TableCell>{event.date}</TableCell>
-                    <TableCell>{event.location}</TableCell>
-                    <TableCell>{event.participants}명</TableCell>
-                    <TableCell>
-                      <StatusBadge status={event.status} />
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-popover">
-                          <DropdownMenuItem>상세 보기</DropdownMenuItem>
-                          <DropdownMenuItem>수정</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            삭제
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+            <div className="overflow-hidden rounded-lg border border-border">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted hover:bg-muted">
+                    <TableHead className="font-semibold">No</TableHead>
+                    <TableHead className="font-semibold">행사명</TableHead>
+                    <TableHead className="font-semibold">일자</TableHead>
+                    <TableHead className="font-semibold">장소</TableHead>
+                    <TableHead className="font-semibold">참가자</TableHead>
+                    <TableHead className="font-semibold">상태</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {events.map((event) => (
+                    <TableRow key={event.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{event.id}</TableCell>
+                      <TableCell className="font-semibold">{event.name}</TableCell>
+                      <TableCell>{event.date}</TableCell>
+                      <TableCell>{event.location}</TableCell>
+                      <TableCell>{event.participants}명</TableCell>
+                      <TableCell>
+                        <StatusBadge status={event.status} />
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="bg-popover">
+                            <DropdownMenuItem>상세 보기</DropdownMenuItem>
+                            <DropdownMenuItem>수정</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive">
+                              삭제
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>
