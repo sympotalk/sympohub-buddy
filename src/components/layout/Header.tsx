@@ -1,4 +1,5 @@
-import { Bell, Settings, ChevronDown } from "lucide-react";
+import { Bell, Settings, ChevronDown, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -11,8 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function Header() {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background transition-colors duration-300">
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center gap-2">
           <span className="text-xl font-bold text-primary">SympoHub</span>
@@ -26,6 +29,19 @@ export function Header() {
 
           <Button variant="ghost" size="icon">
             <Settings className="h-5 w-5" />
+          </Button>
+
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="transition-transform duration-200 hover:rotate-12"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5 transition-all" />
+            ) : (
+              <Moon className="h-5 w-5 transition-all" />
+            )}
           </Button>
 
           <DropdownMenu>
