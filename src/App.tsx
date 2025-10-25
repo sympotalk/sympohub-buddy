@@ -14,6 +14,8 @@ import Account from "./pages/admin/Account";
 import Signup from "./pages/auth/Signup";
 import Profile from "./pages/agency/Profile";
 import Settings from "./pages/agency/Settings";
+import Security from "./pages/agency/Security";
+import Notifications from "./pages/agency/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/signup/:inviteId" element={<Signup />} />
           <Route path="/agency/profile" element={<Profile />} />
           <Route path="/agency/settings" element={<Settings />} />
+          <Route path="/agency/security" element={<Security />} />
+          <Route path="/agency/notifications" element={<Notifications />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

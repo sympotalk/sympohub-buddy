@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AgencyLayout } from "@/components/agency/AgencyLayout";
+import { AccountLayout } from "@/components/account/AccountLayout";
 import { SettingsCard } from "@/components/agency/SettingsCard";
 import { PasswordModal } from "@/components/agency/PasswordModal";
 import {
@@ -57,7 +57,7 @@ export default function Settings() {
   };
 
   return (
-    <AgencyLayout>
+    <AccountLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold">계정 설정</h1>
@@ -100,6 +100,6 @@ export default function Settings() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </AgencyLayout>
+    </AccountLayout>
   );
 }

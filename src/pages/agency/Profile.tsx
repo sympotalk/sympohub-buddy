@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AgencyLayout } from "@/components/agency/AgencyLayout";
+import { AccountLayout } from "@/components/account/AccountLayout";
 import { ProfileCard } from "@/components/agency/ProfileCard";
 import { EditProfileModal } from "@/components/agency/EditProfileModal";
 
@@ -25,7 +25,7 @@ export default function Profile() {
   };
 
   return (
-    <AgencyLayout>
+    <AccountLayout>
       <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold">에이전시 프로필</h1>
@@ -46,6 +46,6 @@ export default function Profile() {
           onSave={handleSaveProfile}
         />
       </div>
-    </AgencyLayout>
+    </AccountLayout>
   );
 }
