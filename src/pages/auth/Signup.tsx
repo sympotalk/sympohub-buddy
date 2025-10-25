@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Building2, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Building2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Spinner, ButtonSpinner } from "@/components/pd/Spinner";
+import { FocusTrap } from "@/components/pd/FocusTrap";
+import { announce } from "@/components/pd/LiveRegion";
+import { PD_MESSAGES } from "@/lib/pd/messages";
+import { slideInLeft, slideInLeftConfig, fadeIn, fadeInConfig } from "@/lib/pd/motion";
+import { UIState } from "@/lib/pd/state";
 
 // Mock Data
 const mockInviteData: Record<string, any> = {
@@ -28,9 +35,10 @@ export default function Signup() {
   const { inviteId } = useParams<{ inviteId: string }>();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formState, setFormState] = useState<UIState>(UIState.IDLE);
   const [inviteValid, setInviteValid] = useState(false);
   const [inviteData, setInviteData] = useState<any>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState({
     name: "",
@@ -60,9 +68,11 @@ export default function Signup() {
           setInviteValid(true);
         } else {
           toast.error("이미 사용된 초대 코드입니다");
+          announce("이미 사용된 초대 코드입니다");
         }
       } else {
         toast.error("유효하지 않은 초대 코드입니다");
+        announce("유효하지 않은 초대 코드입니다");
       }
       
       setIsLoading(false);
@@ -91,43 +101,67 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFieldErrors({});
     
     // Validation
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      toast.error("필수 항목을 입력해주세요.");
-      return;
-    }
+    const errors: Record<string, string> = {};
+    
+    if (!formData.name) errors.name = "이름을 입력해주세요";
+    if (!formData.email) errors.email = "이메일을 입력해주세요";
+    if (!formData.password) errors.password = "비밀번호를 입력해주세요";
+    if (!formData.confirmPassword) errors.confirmPassword = "비밀번호를 확인해주세요";
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("비밀번호가 일치하지 않습니다.");
+      errors.confirmPassword = "비밀번호가 일치하지 않습니다";
+    }
+
+    if (formData.password && formData.password.length < 8) {
+      errors.password = "비밀번호는 8자 이상이어야 합니다";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      toast.error(PD_MESSAGES.error.validationError);
+      announce(PD_MESSAGES.error.validationError);
+      
+      // 첫 번째 에러 필드로 포커스 이동
+      const firstErrorField = Object.keys(errors)[0];
+      document.getElementById(firstErrorField)?.focus();
       return;
     }
 
-    if (formData.password.length < 8) {
-      toast.error("비밀번호는 8자 이상이어야 합니다");
-      return;
+    setFormState(UIState.LOADING);
+
+    try {
+      // Simulate registration
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      setFormState(UIState.SUCCESS);
+      toast.success(PD_MESSAGES.success.signupComplete);
+      announce(PD_MESSAGES.success.signupComplete);
+
+      // Navigate to login or dashboard
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+      }, 1200);
+    } catch (error) {
+      setFormState(UIState.ERROR);
+      toast.error(PD_MESSAGES.error.networkError);
+      announce(PD_MESSAGES.error.networkError);
     }
-
-    setIsSubmitting(true);
-
-    // Simulate registration
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    toast.success("가입 정보가 임시로 저장되었습니다.");
-
-    // Navigate to login or dashboard
-    setTimeout(() => {
-      navigate("/admin/dashboard");
-    }, 2000);
   };
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <Spinner size="lg" />
           <p className="text-sm text-muted-foreground">초대 코드를 확인하고 있습니다...</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -135,58 +169,85 @@ export default function Signup() {
   if (!inviteValid) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md shadow-card">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
-              <AlertCircle className="h-6 w-6 text-destructive" />
-            </div>
-            <CardTitle>유효하지 않은 초대 코드</CardTitle>
-            <CardDescription>
-              초대 코드가 만료되었거나 이미 사용되었습니다
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              className="w-full" 
-              onClick={() => navigate("/admin/dashboard")}
-            >
-              대시보드로 이동
-            </Button>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          <Card className="w-full max-w-md shadow-card">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+                <AlertCircle className="h-6 w-6 text-destructive" />
+              </div>
+              <CardTitle>유효하지 않은 초대 코드</CardTitle>
+              <CardDescription>
+                초대 코드가 만료되었거나 이미 사용되었습니다
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                className="w-full" 
+                onClick={() => navigate("/admin/dashboard")}
+              >
+                대시보드로 이동
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4 py-12">
-      <Card className="w-full max-w-2xl shadow-card">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-            <Building2 className="h-7 w-7 text-primary" />
-          </div>
-          <CardTitle className="text-2xl font-bold">SympoHub 회원가입</CardTitle>
-          <CardDescription className="text-base">
-            초청된 에이전시의 구성원으로 등록됩니다. 아래 정보를 입력해주세요.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">초대 코드 확인 완료</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  초대 코드: <span className="font-mono">{inviteId}</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  만료일: {inviteData.expiresAt}
-                </p>
+      <motion.div
+        variants={slideInLeft}
+        initial="initial"
+        animate="animate"
+        transition={slideInLeftConfig}
+        className="w-full max-w-2xl"
+      >
+        <Card className="shadow-card"
+          style={
+            formState === UIState.SUCCESS
+              ? { backgroundColor: "hsl(var(--success) / 0.05)", borderColor: "hsl(var(--success))" }
+              : undefined
+          }
+        >
+          <CardHeader className="text-center">
+            <motion.div
+              variants={fadeIn}
+              initial="initial"
+              animate="animate"
+              transition={{ ...fadeInConfig, delay: 0.1 }}
+            >
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                <Building2 className="h-7 w-7 text-primary" />
+              </div>
+              <CardTitle className="text-2xl font-bold">SympoHub 회원가입</CardTitle>
+              <CardDescription className="text-base">
+                초청된 에이전시의 구성원으로 등록됩니다. 아래 정보를 입력해주세요.
+              </CardDescription>
+            </motion.div>
+          </CardHeader>
+          <CardContent>
+            <FocusTrap active={true}>
+            <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">초대 코드 확인 완료</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    초대 코드: <span className="font-mono">{inviteId}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    만료일: {inviteData.expiresAt}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
             <div className="space-y-2">
               <Label htmlFor="agencyName">
                 초청 에이전시명
@@ -199,7 +260,7 @@ export default function Signup() {
               />
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:gap-2 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">
                   이름 <span className="text-destructive">*</span>
@@ -211,7 +272,15 @@ export default function Signup() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
+                  aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                  aria-invalid={!!fieldErrors.name}
+                  className={fieldErrors.name ? "border-destructive" : ""}
                 />
+                {fieldErrors.name && (
+                  <p id="name-error" className="text-xs text-destructive">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -240,7 +309,15 @@ export default function Signup() {
                 value={formData.email}
                 onChange={handleInputChange}
                 required
+                aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                aria-invalid={!!fieldErrors.email}
+                className={fieldErrors.email ? "border-destructive" : ""}
               />
+              {fieldErrors.email && (
+                <p id="email-error" className="text-xs text-destructive">
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -283,7 +360,15 @@ export default function Signup() {
                 value={formData.password}
                 onChange={handleInputChange}
                 required
+                aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                aria-invalid={!!fieldErrors.password}
+                className={fieldErrors.password ? "border-destructive" : ""}
               />
+              {fieldErrors.password && (
+                <p id="password-error" className="text-xs text-destructive">
+                  {fieldErrors.password}
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -298,10 +383,17 @@ export default function Signup() {
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 required
+                aria-describedby={
+                  passwordMismatch || fieldErrors.confirmPassword
+                    ? "confirmPassword-error"
+                    : undefined
+                }
+                aria-invalid={passwordMismatch || !!fieldErrors.confirmPassword}
+                className={passwordMismatch || fieldErrors.confirmPassword ? "border-destructive" : ""}
               />
-              {passwordMismatch && (
-                <p className="text-xs text-destructive">
-                  비밀번호가 일치하지 않습니다.
+              {(passwordMismatch || fieldErrors.confirmPassword) && (
+                <p id="confirmPassword-error" className="text-xs text-destructive">
+                  {fieldErrors.confirmPassword || "비밀번호가 일치하지 않습니다"}
                 </p>
               )}
             </div>
@@ -331,13 +423,15 @@ export default function Signup() {
               type="submit"
               className="w-full"
               size="lg"
-              disabled={isSubmitting || passwordMismatch}
+              disabled={formState === UIState.LOADING || passwordMismatch}
             >
-              {isSubmitting ? (
+              {formState === UIState.LOADING ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  처리 중...
+                  <ButtonSpinner />
+                  <span className="ml-2">처리 중...</span>
                 </>
+              ) : formState === UIState.SUCCESS ? (
+                "가입 완료 ✓"
               ) : (
                 "가입 완료"
               )}
@@ -353,8 +447,10 @@ export default function Signup() {
               </button>
             </div>
           </form>
+          </FocusTrap>
         </CardContent>
-      </Card>
+        </Card>
+      </motion.div>
     </div>
   );
 }

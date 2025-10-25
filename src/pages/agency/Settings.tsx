@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { AccountLayout } from "@/components/account/AccountLayout";
 import { SettingsCard } from "@/components/agency/SettingsCard";
 import { PasswordModal } from "@/components/agency/PasswordModal";
@@ -13,6 +14,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { announce } from "@/components/pd/LiveRegion";
+import { PD_MESSAGES } from "@/lib/pd/messages";
+import { shake } from "@/lib/pd/motion";
 
 export default function Settings() {
   const [settings, setSettings] = useState({
@@ -28,7 +32,8 @@ export default function Settings() {
       ...settings,
       [`${type}Notifications`]: value,
     });
-    toast.success("설정이 업데이트되었습니다.");
+    toast.success(PD_MESSAGES.success.applied);
+    announce(PD_MESSAGES.success.applied);
   };
 
   const handleThemeChange = (theme: "light" | "dark") => {
@@ -36,7 +41,8 @@ export default function Settings() {
       ...settings,
       theme,
     });
-    toast.success("테마가 변경되었습니다.");
+    toast.success(PD_MESSAGES.success.applied);
+    announce("테마가 변경되었습니다");
   };
 
   const handlePasswordChange = () => {
@@ -49,10 +55,12 @@ export default function Settings() {
 
   const handleDeleteAccount = () => {
     setIsDeleteDialogOpen(true);
+    announce(PD_MESSAGES.confirm.delete);
   };
 
   const confirmDeleteAccount = () => {
     toast.error("계정 삭제 기능은 현재 비활성화되어 있습니다");
+    announce("계정 삭제 기능은 현재 비활성화되어 있습니다");
     setIsDeleteDialogOpen(false);
   };
 
@@ -81,22 +89,28 @@ export default function Settings() {
         />
 
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>정말 계정을 삭제하시겠습니까?</AlertDialogTitle>
-              <AlertDialogDescription>
-                이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>취소</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={confirmDeleteAccount}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                삭제
-              </AlertDialogAction>
-            </AlertDialogFooter>
+          <AlertDialogContent asChild>
+            <motion.div
+              variants={shake}
+              initial="initial"
+              animate={isDeleteDialogOpen ? "animate" : "initial"}
+            >
+              <AlertDialogHeader>
+                <AlertDialogTitle>정말 계정을 삭제하시겠습니까?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>취소</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={confirmDeleteAccount}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  삭제
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </motion.div>
           </AlertDialogContent>
         </AlertDialog>
       </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Shield, Settings as SettingsIcon, Users, FileText } from "lucide-react";
+import { announce } from "@/components/pd/LiveRegion";
+import { PD_MESSAGES } from "@/lib/pd/messages";
+import { slideInLeft, slideInLeftConfig } from "@/lib/pd/motion";
 
 export default function Settings() {
   const [operationMode, setOperationMode] = useState<"production" | "test">("production");
@@ -15,30 +19,46 @@ export default function Settings() {
 
   const handleModeChange = (value: string) => {
     setOperationMode(value as "production" | "test");
-    toast.info("관리자 설정은 Pro 환경에서 적용됩니다.");
+    const message = "관리자 설정은 Pro 환경에서 적용됩니다";
+    toast.info(message);
+    announce(message);
   };
 
   const handlePasswordChange = () => {
-    toast.info("관리자 설정은 Pro 환경에서 적용됩니다.");
+    const message = "관리자 설정은 Pro 환경에서 적용됩니다";
+    toast.info(message);
+    announce(message);
   };
 
   const handleTwoFactorToggle = (checked: boolean) => {
     setTwoFactorEnabled(checked);
-    toast.info("관리자 설정은 Pro 환경에서 적용됩니다.");
+    const message = "관리자 설정은 Pro 환경에서 적용됩니다";
+    toast.info(message);
+    announce(message);
   };
 
   const handleLoginAlertsToggle = (checked: boolean) => {
     setLoginAlerts(checked);
-    toast.info("관리자 설정은 Pro 환경에서 적용됩니다.");
+    const message = "관리자 설정은 Pro 환경에서 적용됩니다";
+    toast.info(message);
+    announce(message);
   };
 
   const handleViewLogs = () => {
-    toast.info("관리자 설정은 Pro 환경에서 적용됩니다.");
+    const message = "관리자 설정은 Pro 환경에서 적용됩니다";
+    toast.info(message);
+    announce(message);
   };
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
+      <motion.div
+        variants={slideInLeft}
+        initial="initial"
+        animate="animate"
+        transition={slideInLeftConfig}
+        className="space-y-8"
+      >
         <div>
           <h1 className="text-3xl font-bold">관리자 계정 설정</h1>
           <p className="mt-2 text-muted-foreground">
@@ -152,7 +172,7 @@ export default function Settings() {
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     </AdminLayout>
   );
 }
