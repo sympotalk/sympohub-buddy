@@ -10,6 +10,8 @@ import Participants from "./pages/admin/Participants";
 import Rooming from "./pages/admin/Rooming";
 import Messages from "./pages/admin/Messages";
 import Forms from "./pages/admin/Forms";
+import Account from "./pages/admin/Account";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/admin/rooming" element={<Rooming />} />
           <Route path="/admin/messages" element={<Messages />} />
           <Route path="/admin/forms" element={<Forms />} />
+          <Route path="/admin/account" element={<Account />} />
+          <Route path="/signup/:inviteId" element={<Signup />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -6,6 +6,7 @@ import {
   Hotel,
   MessageSquare,
   FileText,
+  Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +40,11 @@ const menuItems = [
     title: "설문·초청장",
     icon: FileText,
     url: "/admin/forms",
+  },
+  {
+    title: "계정 관리",
+    icon: Building2,
+    url: "/admin/account",
   },
 ];
 
