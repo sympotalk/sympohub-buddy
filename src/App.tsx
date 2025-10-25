@@ -12,6 +12,8 @@ import Messages from "./pages/admin/Messages";
 import Forms from "./pages/admin/Forms";
 import Account from "./pages/admin/Account";
 import Signup from "./pages/auth/Signup";
+import Profile from "./pages/agency/Profile";
+import Settings from "./pages/agency/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +34,8 @@ const App = () => (
           <Route path="/admin/forms" element={<Forms />} />
           <Route path="/admin/account" element={<Account />} />
           <Route path="/signup/:inviteId" element={<Signup />} />
+          <Route path="/agency/profile" element={<Profile />} />
+          <Route path="/agency/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
