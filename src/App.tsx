@@ -11,6 +11,7 @@ import Rooming from "./pages/admin/Rooming";
 import Messages from "./pages/admin/Messages";
 import Forms from "./pages/admin/Forms";
 import Account from "./pages/admin/Account";
+import AdminSettings from "./pages/admin/Settings";
 import Signup from "./pages/auth/Signup";
 import Profile from "./pages/agency/Profile";
 import Settings from "./pages/agency/Settings";
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/admin/messages" element={<Messages />} />
           <Route path="/admin/forms" element={<Forms />} />
           <Route path="/admin/account" element={<Account />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/signup/:inviteId" element={<Signup />} />
           <Route path="/agency/profile" element={<Profile />} />
           <Route path="/agency/settings" element={<Settings />} />
