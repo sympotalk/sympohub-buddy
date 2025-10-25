@@ -11,7 +11,7 @@ import Rooming from "./pages/admin/Rooming";
 import Messages from "./pages/admin/Messages";
 import Forms from "./pages/admin/Forms";
 import Account from "./pages/admin/Account";
-import Signup from "./pages/Signup";
+import Signup from "./pages/auth/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

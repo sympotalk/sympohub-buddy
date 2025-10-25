@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Building2, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
@@ -36,8 +37,13 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
+    teamName: "",
+    position: "",
     phone: "",
+    notes: "",
   });
+
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
 
   useEffect(() => {
     // Mock invite validation
@@ -65,7 +71,18 @@ export default function Signup() {
     validateInvite();
   }, [inviteId]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    // Check password mismatch
+    if (formData.password && formData.confirmPassword) {
+      setPasswordMismatch(formData.password !== formData.confirmPassword);
+    } else {
+      setPasswordMismatch(false);
+    }
+  }, [formData.password, formData.confirmPassword]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -76,13 +93,13 @@ export default function Signup() {
     e.preventDefault();
     
     // Validation
-    if (!formData.name || !formData.email || !formData.password || !formData.phone) {
-      toast.error("모든 필수 항목을 입력해주세요");
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      toast.error("필수 항목을 입력해주세요.");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("비밀번호가 일치하지 않습니다");
+      toast.error("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -96,9 +113,7 @@ export default function Signup() {
     // Simulate registration
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    toast.success("회원가입이 완료되었습니다", {
-      description: "관리자 승인 후 로그인하실 수 있습니다",
-    });
+    toast.success("가입 정보가 임시로 저장되었습니다.");
 
     // Navigate to login or dashboard
     setTimeout(() => {
@@ -120,7 +135,7 @@ export default function Signup() {
   if (!inviteValid) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md shadow-card">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
               <AlertCircle className="h-6 w-6 text-destructive" />
@@ -144,21 +159,21 @@ export default function Signup() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 py-12">
+      <Card className="w-full max-w-2xl shadow-card">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Building2 className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+            <Building2 className="h-7 w-7 text-primary" />
           </div>
-          <CardTitle className="text-2xl">SympoHub 에이전시 가입</CardTitle>
-          <CardDescription>
-            {inviteData.masterName}에서 초대한 {inviteData.agencyName} 계정을 생성합니다
+          <CardTitle className="text-2xl font-bold">SympoHub 회원가입</CardTitle>
+          <CardDescription className="text-base">
+            초청된 에이전시의 구성원으로 등록됩니다. 아래 정보를 입력해주세요.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
             <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-primary" />
+              <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-primary" />
               <div className="flex-1">
                 <p className="text-sm font-medium">초대 코드 확인 완료</p>
                 <p className="mt-1 text-xs text-muted-foreground">
@@ -171,8 +186,20 @@ export default function Signup() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="agencyName">
+                초청 에이전시명
+              </Label>
+              <Input
+                id="agencyName"
+                value={inviteData.agencyName}
+                disabled
+                className="bg-muted"
+              />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label htmlFor="name">
                   이름 <span className="text-destructive">*</span>
@@ -189,7 +216,7 @@ export default function Signup() {
 
               <div className="space-y-2">
                 <Label htmlFor="phone">
-                  연락처 <span className="text-destructive">*</span>
+                  연락처
                 </Label>
                 <Input
                   id="phone"
@@ -197,7 +224,6 @@ export default function Signup() {
                   placeholder="010-1234-5678"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
             </div>
@@ -215,6 +241,34 @@ export default function Signup() {
                 onChange={handleInputChange}
                 required
               />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="teamName">
+                  소속 팀명
+                </Label>
+                <Input
+                  id="teamName"
+                  name="teamName"
+                  placeholder="예: 마케팅팀"
+                  value={formData.teamName}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="position">
+                  직책 / 직무명
+                </Label>
+                <Input
+                  id="position"
+                  name="position"
+                  placeholder="예: 팀장, 매니저"
+                  value={formData.position}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -245,38 +299,58 @@ export default function Signup() {
                 onChange={handleInputChange}
                 required
               />
+              {passwordMismatch && (
+                <p className="text-xs text-destructive">
+                  비밀번호가 일치하지 않습니다.
+                </p>
+              )}
             </div>
 
-            <div className="rounded-lg border border-border bg-muted/30 p-4">
+            <div className="space-y-2">
+              <Label htmlFor="notes">
+                비고 / 메모
+              </Label>
+              <Textarea
+                id="notes"
+                name="notes"
+                placeholder="추가로 전달하실 내용이 있으시면 입력해주세요 (선택)"
+                value={formData.notes}
+                onChange={handleInputChange}
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+
+            <div className="rounded-lg border border-border bg-muted/30 p-3">
               <p className="text-xs text-muted-foreground">
                 회원가입 시 SympoHub의 서비스 약관 및 개인정보 처리방침에 동의하는 것으로 간주됩니다
               </p>
             </div>
 
-            <div className="flex gap-3">
-              <Button
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={isSubmitting || passwordMismatch}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  처리 중...
+                </>
+              ) : (
+                "가입 완료"
+              )}
+            </Button>
+
+            <div className="text-center">
+              <button
                 type="button"
-                variant="outline"
-                className="flex-1"
                 onClick={() => navigate("/admin/dashboard")}
-                disabled={isSubmitting}
+                className="text-sm text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
               >
-                취소
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    처리 중...
-                  </>
-                ) : (
-                  "가입 완료"
-                )}
-              </Button>
+                로그인으로 돌아가기
+              </button>
             </div>
           </form>
         </CardContent>
